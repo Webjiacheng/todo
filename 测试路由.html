@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<!--开启angular:ng-app-->
+<body ng-app="routeApp">
+<!--开启视图：ng--view-->
+<div ng-view></div>
+<script src="node_modules/angular/angular.js"></script>
+<script src="node_modules/angular-route/angular-route.js"></script>
+<script>
+	angular
+//加入路由依赖
+			.module('routeApp',['ngRoute'])
+//注入路由服务
+			.config(['$routeProvider',function($routeProvider){
+//使用实例化对象:路由服务规则：.when('url',{template:'模板'}),template可以改成templateUrl
+				$routeProvider
+						.when('/stu',{
+							template:'<h1>这是xxx同学</h1>'
+						})
+						.when('/stu/wangwu',{
+//templateUrl还可以指向html
+							templateUrl:'./wangwu.html',
+							controller:'testCtrl'
+						})
+						.when('/stu/zhangsan',{
+							template:'<h1>这是张三同学</h1>'
+						})
+						.when('/stu/lisi',{
+							template:'<h1>这是李四同学</h1>'
+						})
+						.otherwise({
+							redirectTo:'/stu'
+						})
+			}])
+			.controller('testCtrl',['$scope',function($scope){
+				$scope.list=['张三','李四','王五','赵六','田七','王八'];
+			}])
+</script>
+</body>
+</html>

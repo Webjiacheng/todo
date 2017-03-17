@@ -1,0 +1,72 @@
+/**
+ * Created by hujiacheng on 2017/3/16.
+ */
+(function(angular){
+    angular
+        .module('todo_controller',['ngRoute'])
+		.config(['$routeProvider',function($routeProvider){
+			$routeProvider
+				.when('/:status?',{
+					templateUrl:'./view/todo.html',
+					controller:'todoCtrl'
+				})
+		}])
+        .controller('todoCtrl',['$scope','$routeParams','todoServise',function($scope,$routeParams,todoServise){
+            $scope.list=todoServise.getData();
+            $scope.newTodo='';
+            $scope.add=function(){
+                //当前内容为空时，限制提交
+                if($scope.newTodo.trim().length==""){
+                    return;
+                }
+				todoServise.add($scope.newTodo);
+                //提交后重置输入框
+                $scope.newTodo='';
+            }
+            $scope.remove=function(id){
+				todoServise.remove(id);
+            }
+            //双击编辑：有问题
+            $scope.editId=0;
+            $scope.edit=function(id){
+                $scope.editId=id;
+            }
+            $scope.update=function(){
+                $scope.editId=0;
+				todoServise.save();
+            }
+            //全选
+            $scope.selecteAll=todoServise.isSelectedAll();
+            $scope.All=function(){
+				todoServise.All($scope.selecteAll);
+            }
+			//单选
+			$scope.checkOne=function(){
+				todoServise.save();
+				$scope.selecteAll=todoServise.isSelectedAll();
+			}
+            //删除完成项
+            $scope.removeCon=function(){
+				todoServise.removeCon();
+            }
+            //显示隐藏删除完成项
+            $scope.isShow=function(){
+				return todoServise.isShow();
+            }
+            //显示没有完成的数量
+            $scope.total=function(){
+                return todoServise.total();
+            }
+            //监视url变化
+			switch($routeParams.status){
+				case 'active':
+					$scope.status=false;
+					break;
+				case 'completed':
+					$scope.status=true;
+					break;
+				default :
+					$scope.status=undefined;
+			}
+        }])
+}(angular))
